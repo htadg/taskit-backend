@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.htadg</groupId>
-	<artifactId>taskit</artifactId>
+	<artifactId>taskit-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>taskit-backend</name>
 	<description>Backend Project for TaskIt</description>
