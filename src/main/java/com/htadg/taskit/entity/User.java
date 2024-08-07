@@ -3,6 +3,7 @@ package com.htadg.taskit.entity;
 import java.util.Collection;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,10 +13,12 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
+@ToString
 @Table(name="TASKIT_USER")
 public class User {
  
@@ -31,7 +34,7 @@ public class User {
     private boolean enabled;
     private boolean tokenExpired;
 
-    @ManyToMany 
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable( 
         name = "users_roles", 
         joinColumns = @JoinColumn(
