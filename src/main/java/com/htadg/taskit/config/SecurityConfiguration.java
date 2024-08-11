@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.htadg.taskit.constant.TaskitConstants.ROLE;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
@@ -29,8 +31,11 @@ public class SecurityConfiguration {
 
     @Bean
     public RoleHierarchy roleHierarchy() {
-        String hierarchy = "ROLE_ADMIN > ROLE_USER \n ROLE_USER > ROLE_GUEST";
-        return RoleHierarchyImpl.fromHierarchy(hierarchy);
+        return RoleHierarchyImpl.withRolePrefix("")
+            .role(ROLE.SUPER_USER.getValue()).implies(ROLE.ADMIN.getValue())
+            .role(ROLE.ADMIN.getValue()).implies(ROLE.USER.getValue())
+            .role(ROLE.USER.getValue()).implies(ROLE.GUEST.getValue())
+            .build();
     }
 
     @Bean

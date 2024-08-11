@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.htadg.taskit.constant.TaskitConstants.PRIVILEGE;
+import com.htadg.taskit.constant.TaskitConstants.ROLE;
 import com.htadg.taskit.entity.Privilege;
 import com.htadg.taskit.entity.Role;
 import com.htadg.taskit.entity.User;
@@ -53,13 +55,17 @@ public class SetupDataLoader implements
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (alreadySetup) return;
 
-        Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
-        Privilege writePrivilege = createPrivilegeIfNotFound("WRITE_PRIVILEGE");
-        Privilege deletePrivilege = createPrivilegeIfNotFound("DELETE_PRIVILEGE");
+        Privilege readTask = createPrivilegeIfNotFound(PRIVILEGE.READ_TASK);
+        Privilege updateTask = createPrivilegeIfNotFound(PRIVILEGE.UPDATE_TASK);
+        Privilege createTask = createPrivilegeIfNotFound(PRIVILEGE.CREATE_TASK);
+        Privilege deleteTask = createPrivilegeIfNotFound(PRIVILEGE.DELETE_TASK);
+        Privilege onboardUser = createPrivilegeIfNotFound(PRIVILEGE.ONBOARD_USER);
+        Privilege onboardAdmin = createPrivilegeIfNotFound(PRIVILEGE.ONBOARD_ADMIN);
  
-        createRoleIfNotFound("ROLE_ADMIN", Arrays.asList(readPrivilege, writePrivilege, deletePrivilege));
-        createRoleIfNotFound("ROLE_USER", Arrays.asList(readPrivilege, writePrivilege));
-        createRoleIfNotFound("ROLE_GUEST", Arrays.asList(readPrivilege));
+        createRoleIfNotFound(ROLE.SUPER_USER, Arrays.asList(onboardAdmin));
+        createRoleIfNotFound(ROLE.ADMIN, Arrays.asList(onboardUser, createTask, deleteTask));
+        createRoleIfNotFound(ROLE.USER, Arrays.asList(updateTask));
+        createRoleIfNotFound(ROLE.GUEST, Arrays.asList(readTask));
 
         if (adminExists()) {
             log.info("Admin user already exists! Skipping initial data setup...");
@@ -92,12 +98,12 @@ public class SetupDataLoader implements
     }
 
     @Transactional
-    Privilege createPrivilegeIfNotFound(String name) {
+    Privilege createPrivilegeIfNotFound(PRIVILEGE priv) {
  
-        Privilege privilege = privilegeRepository.findByName(name);
+        Privilege privilege = privilegeRepository.findByName(priv.getValue());
         if (privilege == null) {
             privilege = new Privilege();
-            privilege.setName(name);
+            privilege.setName(priv.getValue());
             privilegeRepository.save(privilege);
         }
         return privilege;
@@ -105,12 +111,12 @@ public class SetupDataLoader implements
 
     @Transactional
     Role createRoleIfNotFound(
-      String name, Collection<Privilege> privileges) {
+      ROLE roleName, Collection<Privilege> privileges) {
  
-        Role role = roleRepository.findByName(name);
+        Role role = roleRepository.findByName(roleName.getValue());
         if (role == null) {
             role = new Role();
-            role.setName(name);
+            role.setName(roleName.getValue());
             role.setPrivileges(privileges);
             roleRepository.save(role);
         }
