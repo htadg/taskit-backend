@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.htadg.taskit.constant.TaskitConstants.ROLE;
 import com.htadg.taskit.entity.Privilege;
 import com.htadg.taskit.entity.Role;
 import com.htadg.taskit.entity.User;
@@ -34,7 +35,7 @@ public class TaskitUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(userName);
         if (user == null) {
-            return new org.springframework.security.core.userdetails.User(" ", " ", true, true, true, true, getAuthorities(Arrays.asList(roleRepository.findByName("ROLE_GUEST"))));
+            return new org.springframework.security.core.userdetails.User(" ", " ", true, true, true, true, getAuthorities(Arrays.asList(roleRepository.findByName(ROLE.GUEST.getValue()))));
         }
 
         return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), user.isEnabled(), true, true, true, getAuthorities(user.getRoles()));

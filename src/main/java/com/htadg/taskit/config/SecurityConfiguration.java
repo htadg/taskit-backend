@@ -4,11 +4,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -18,6 +21,22 @@ import com.htadg.taskit.constant.TaskitConstants.ROLE;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests((authorizeHttpRequest) -> {
+                authorizeHttpRequest
+                    .requestMatchers("/", "/tasks/**").permitAll()
+                    .anyRequest().authenticated();
+            })
+            .formLogin(Customizer.withDefaults())
+            .logout((logoutRequest) -> {
+                logoutRequest.permitAll();
+            });
+            // .httpBasic(Customizer.withDefaults());
+        return http.build();
+    }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
