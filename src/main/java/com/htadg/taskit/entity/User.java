@@ -11,14 +11,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
+
+@Data
 @Entity
-@Getter
-@Setter
-@ToString
 @Table(name="TASKIT_USER")
 public class User {
  
@@ -31,8 +28,7 @@ public class User {
     private String userName;
     private String email;
     private String password;
-    private boolean enabled;
-    private boolean tokenExpired;
+    private boolean active;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable( 

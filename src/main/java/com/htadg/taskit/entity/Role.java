@@ -11,14 +11,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
+
+@Data
 @Entity
-@Setter
-@Getter
-@ToString
 @Table(name="TASKIT_ROLE")
 public class Role {
  

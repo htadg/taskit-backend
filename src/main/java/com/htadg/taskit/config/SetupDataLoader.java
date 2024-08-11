@@ -73,7 +73,7 @@ public class SetupDataLoader implements
             return;
         }
 
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+        Role adminRole = roleRepository.findByName(ROLE.SUPER_USER.getValue());
         User user = new User();
         user.setFirstName(adminFirstName);
         user.setLastName(adminLastName);
@@ -81,7 +81,7 @@ public class SetupDataLoader implements
         user.setUserName(adminUserName);
         user.setPassword(passwordEncoder.encode(adminPassword));
         user.setRoles(Arrays.asList(adminRole));
-        user.setEnabled(true);
+        user.setActive(true);
         userRepository.save(user);
 
         alreadySetup = true;

@@ -34,11 +34,7 @@ public class TaskitUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         User user = userRepository.findByUserName(userName);
-        if (user == null) {
-            return new org.springframework.security.core.userdetails.User(" ", " ", true, true, true, true, getAuthorities(Arrays.asList(roleRepository.findByName(ROLE.GUEST.getValue()))));
-        }
-
-        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), user.isEnabled(), true, true, true, getAuthorities(user.getRoles()));
+        return userToUserDetails(user);
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {
@@ -64,5 +60,12 @@ public class TaskitUserDetailsService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority(privilege));
         }
         return authorities;
+    }
+
+    public org.springframework.security.core.userdetails.User userToUserDetails(User user) {
+        if (user == null) {
+            return new org.springframework.security.core.userdetails.User(" ", " ", true, true, true, true, getAuthorities(Arrays.asList(roleRepository.findByName(ROLE.GUEST.getValue()))));
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), user.isActive(), true, true, true, getAuthorities(user.getRoles()));
     }
 }

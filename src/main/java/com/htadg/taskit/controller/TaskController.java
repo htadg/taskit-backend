@@ -9,10 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
-
-    public TaskController() {
-    }
-
     /**
      * Retrieves a list of tasks in JSON format.
      *
