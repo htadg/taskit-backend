@@ -2,7 +2,6 @@ package com.htadg.taskit.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -31,20 +30,19 @@ import com.htadg.taskit.constant.TaskitConstants.ROLE;
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Autowired
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf((csrfRequest) -> {
                 csrfRequest.disable();
             })
             .authorizeHttpRequests((authorizeHttpRequest) -> {
                 authorizeHttpRequest
-                    .requestMatchers("/", "/auth/**", "/h2-console/**").permitAll()
+                    .requestMatchers("/auth/**", "/h2-console/**").permitAll()
                     .anyRequest().authenticated();
             })
             .sessionManagement((sessionRequest) -> {
@@ -56,12 +54,12 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -74,7 +72,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public DefaultWebSecurityExpressionHandler customWebSecurityExpressionHandler() {
+    DefaultWebSecurityExpressionHandler customWebSecurityExpressionHandler() {
         DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
         expressionHandler.setRoleHierarchy(roleHierarchy());
         return expressionHandler;

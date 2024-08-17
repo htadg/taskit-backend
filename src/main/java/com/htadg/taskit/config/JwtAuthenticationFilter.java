@@ -2,7 +2,6 @@ package com.htadg.taskit.config;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,7 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final TaskitUserDetailsService userDetailsService;
 
-    @Autowired
     public JwtAuthenticationFilter(JwtService jwtService, TaskitUserDetailsService userDetailsService,
             HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtService = jwtService;
@@ -51,13 +49,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             final String jwt = authHeader.substring(7);
             final String userName = jwtService.extractUsername(jwt);
-            log.info(authHeader);
-            log.info(userName);
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            
             if (userName != null && authentication == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-                if (jwtService.isTokenValid(userName, userDetails)) {
+                if (jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -65,8 +62,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }
+
+        filterChain.doFilter(request, response);
     }
 
 }
