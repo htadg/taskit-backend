@@ -2,6 +2,7 @@ package com.htadg.taskit.config;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -62,10 +63,10 @@ public class SetupDataLoader implements
         Privilege onboardUser = createPrivilegeIfNotFound(PRIVILEGE.ONBOARD_USER);
         Privilege onboardAdmin = createPrivilegeIfNotFound(PRIVILEGE.ONBOARD_ADMIN);
  
-        createRoleIfNotFound(ROLE.SUPER_USER, Arrays.asList(onboardAdmin));
+        createRoleIfNotFound(ROLE.SUPER_USER, Collections.singletonList(onboardAdmin));
         createRoleIfNotFound(ROLE.ADMIN, Arrays.asList(onboardUser, createTask, deleteTask));
-        createRoleIfNotFound(ROLE.USER, Arrays.asList(updateTask));
-        createRoleIfNotFound(ROLE.GUEST, Arrays.asList(readTask));
+        createRoleIfNotFound(ROLE.USER, Collections.singletonList(updateTask));
+        createRoleIfNotFound(ROLE.GUEST, Collections.singletonList(readTask));
 
         if (adminExists()) {
             log.info("Admin user already exists! Skipping initial data setup...");
@@ -80,7 +81,7 @@ public class SetupDataLoader implements
         user.setEmail(adminEmail);
         user.setUserName(adminUserName);
         user.setPassword(passwordEncoder.encode(adminPassword));
-        user.setRoles(Arrays.asList(adminRole));
+        user.setRoles(Collections.singletonList(adminRole));
         user.setActive(true);
         userRepository.save(user);
 
@@ -110,7 +111,7 @@ public class SetupDataLoader implements
     }
 
     @Transactional
-    Role createRoleIfNotFound(
+    void createRoleIfNotFound(
       ROLE roleName, Collection<Privilege> privileges) {
  
         Role role = roleRepository.findByName(roleName.getValue());
@@ -120,6 +121,5 @@ public class SetupDataLoader implements
             role.setPrivileges(privileges);
             roleRepository.save(role);
         }
-        return role;
     }
 }
