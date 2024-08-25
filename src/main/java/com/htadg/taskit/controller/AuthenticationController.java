@@ -1,5 +1,8 @@
 package com.htadg.taskit.controller;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +22,17 @@ import lombok.AllArgsConstructor;
 
 @RequestMapping("/auth")
 @RestController
-@AllArgsConstructor
 public class AuthenticationController {
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
     private final TaskitUserDetailsService userDetailsService;
+
+    @Autowired
+    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, TaskitUserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
+        this.authenticationService = authenticationService;
+        this.userDetailsService = userDetailsService;
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<User> register(@RequestBody RegisterUserDto user) {
@@ -38,7 +47,7 @@ public class AuthenticationController {
         if (authenticatedUser == null) {
             ResponseEntity.badRequest().body("{\"error\": \"Invalid Credentials\"}");
         }
-        String jwtToken = jwtService.generateToken(userDetailsService.userToUserDetails(authenticatedUser));
+        String jwtToken = jwtService.generateToken(authenticatedUser);
         
         LoginResponseDto loginResponse = new LoginResponseDto();
         loginResponse.setToken(jwtToken);

@@ -1,21 +1,22 @@
 package com.htadg.taskit.entity;
 
-import java.sql.Timestamp;
+import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Collection;
 
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@Getter
+@Setter
 @Entity
-@Table(name="ROLE")
-public class Role extends AuditableEntity {
- 
+@Table(name = "BOARD")
+public class Board extends AuditableEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Integer id;
 
     @EqualsAndHashCode.Include
@@ -24,7 +25,7 @@ public class Role extends AuditableEntity {
     private String description;
     private boolean active = true;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
     private Collection<UserBoardRoleLink> userBoardRoleLinks;
 
 }

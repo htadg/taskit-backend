@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@ConfigurationProperties("security.jwt")
 @Service
 public class JwtService {
+
+    @Value("${security.jwt.secret-key}")
     private String secretKey;
+
+    @Value("${security.jwt.jwt-expiration}")
     private Long jwtExpiration;
 
     public String extractUsername(String token) {

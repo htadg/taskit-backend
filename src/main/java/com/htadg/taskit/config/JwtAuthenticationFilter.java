@@ -2,6 +2,7 @@ package com.htadg.taskit.config;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final TaskitUserDetailsService userDetailsService;
 
+    @Autowired
     public JwtAuthenticationFilter(JwtService jwtService, TaskitUserDetailsService userDetailsService,
             HandlerExceptionResolver handlerExceptionResolver) {
         this.jwtService = jwtService;

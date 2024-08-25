@@ -7,5 +7,5 @@ import com.htadg.taskit.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    public User findByUserName(String userName);
+    public User findByUsername(String username);
 }

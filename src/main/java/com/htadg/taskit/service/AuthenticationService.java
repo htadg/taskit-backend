@@ -1,5 +1,8 @@
 package com.htadg.taskit.service;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,22 +17,30 @@ import com.htadg.taskit.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@Setter
+@Getter
 public class AuthenticationService {
+
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
+    @Autowired
+    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+    }
+
     public User signup(RegisterUserDto input) {
         User user = new User();
+        user.setUsername(input.getUsername());
+        user.setPassword(passwordEncoder.encode(input.getPassword()));
         user.setFirstName(input.getFirstName());
         user.setLastName(input.getLastName());
         user.setEmail(input.getEmail());
-        user.setUserName(input.getUserName());
-        user.setPassword(passwordEncoder.encode(input.getPassword()));
-        user.setActive(true);
-        user.setRoles(roleRepository.findByIdIn(input.getRoles()));
+        user.setSuperAdmin(input.isSuperAdmin());
+        user.setActive(input.isActive());
         userRepository.save(user);
 
         return user;
@@ -37,9 +48,9 @@ public class AuthenticationService {
 
     public User authenticate(LoginUserDto input) {
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(input.getUserName(), input.getPassword())
+            new UsernamePasswordAuthenticationToken(input.getUsername(), input.getPassword())
         );
 
-        return userRepository.findByUserName(input.getUserName());
+        return userRepository.findByUsername(input.getUsername());
     }
 }

@@ -9,7 +9,8 @@ public class RegisterUserDto {
     private String firstName;
     private String lastName;
     private String email;
-    private String userName;
+    private String username;
     private String password;
-    private Collection<String> roles;
+    private boolean superAdmin = false;
+    private boolean active = true;
 }

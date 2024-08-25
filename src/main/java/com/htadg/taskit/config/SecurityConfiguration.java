@@ -2,27 +2,25 @@ package com.htadg.taskit.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import com.htadg.taskit.constant.TaskitConstants.ROLE;
 
 
 @Configuration
@@ -31,6 +29,16 @@ import com.htadg.taskit.constant.TaskitConstants.ROLE;
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Value("${taskit.allowed_origins}")
+    private List<String> allowedOrigins;
+
+    @Value("${taskit.allowed_methods}")
+    private List<String> allowedMethods;
+
+    @Value("${taskit.allowed_headers}")
+    private List<String> allowedHeaders;
+
+    @Autowired
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
@@ -43,6 +51,10 @@ public class SecurityConfiguration {
                 authorizeHttpRequest
                     .requestMatchers("/auth/**", "/h2-console/**").permitAll()
                     .anyRequest().authenticated();
+            })
+            .headers((headersCustomizer) -> {
+                headersCustomizer
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
             })
             .sessionManagement((sessionRequest) -> {
                 sessionRequest
@@ -62,28 +74,13 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
-    public RoleHierarchy roleHierarchy() {
-        return RoleHierarchyImpl.withRolePrefix("")
-            .role(ROLE.SUPER_USER.getValue()).implies(ROLE.ADMIN.getValue())
-            .role(ROLE.ADMIN.getValue()).implies(ROLE.USER.getValue())
-            .role(ROLE.USER.getValue()).implies(ROLE.GUEST.getValue())
-            .build();
-    }
-
-    @Bean
-    DefaultWebSecurityExpressionHandler customWebSecurityExpressionHandler() {
-        DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
-        expressionHandler.setRoleHierarchy(roleHierarchy());
-        return expressionHandler;
-    }
-
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        configuration.setAllowedMethods(List.of("GET","POST"));
-        configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
+        configuration.setAllowedOrigins(allowedOrigins);
+        configuration.setAllowedMethods(allowedMethods);
+        configuration.setAllowedHeaders(allowedHeaders);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 

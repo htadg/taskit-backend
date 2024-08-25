@@ -1,10 +1,9 @@
 package com.htadg.taskit.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,57 +14,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.htadg.taskit.constant.TaskitConstants.ROLE;
-import com.htadg.taskit.entity.Privilege;
 import com.htadg.taskit.entity.Role;
 import com.htadg.taskit.entity.User;
 import com.htadg.taskit.repository.RoleRepository;
 import com.htadg.taskit.repository.UserRepository;
 
+@Setter
+@Getter
 @Service("userDetailsService")
 @Transactional
 public class TaskitUserDetailsService implements UserDetailsService {
 
-    @Autowired
     private UserRepository userRepository;
- 
+
     @Autowired
-    private RoleRepository roleRepository;
+    public TaskitUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(userName);
-        return userToUserDetails(user);
-    }
-
-    private Collection<? extends GrantedAuthority> getAuthorities(Collection<Role> roles) {
-        return getGrantedAuthorities(getPrivileges(roles));
-    }
-
-    private List<String> getPrivileges(Collection<Role> roles) {
-        List<String> privileges = new ArrayList<>();
-        List<Privilege> collection = new ArrayList<>();
-        for (Role role : roles) {
-            privileges.add(role.getName());
-            collection.addAll(role.getPrivileges());
-        }
-        for (Privilege item : collection) {
-            privileges.add(item.getName());
-        }
-        return privileges;
-    }
-
-    private List<GrantedAuthority> getGrantedAuthorities(List<String> privileges) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String privilege : privileges) {
-            authorities.add(new SimpleGrantedAuthority(privilege));
-        }
-        return authorities;
-    }
-
-    public org.springframework.security.core.userdetails.User userToUserDetails(User user) {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
         if (user == null) {
-            return new org.springframework.security.core.userdetails.User(" ", " ", true, true, true, true, getAuthorities(Arrays.asList(roleRepository.findByName(ROLE.GUEST.getValue()))));
+            return User.getGuestUser();
         }
-        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), user.isActive(), true, true, true, getAuthorities(user.getRoles()));
+        return user;
     }
+
 }
