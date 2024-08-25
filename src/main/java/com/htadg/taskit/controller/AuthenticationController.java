@@ -1,14 +1,5 @@
 package com.htadg.taskit.controller;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.htadg.taskit.dto.LoginResponseDto;
 import com.htadg.taskit.dto.LoginUserDto;
 import com.htadg.taskit.dto.RegisterUserDto;
@@ -16,8 +7,12 @@ import com.htadg.taskit.entity.User;
 import com.htadg.taskit.service.AuthenticationService;
 import com.htadg.taskit.service.JwtService;
 import com.htadg.taskit.service.TaskitUserDetailsService;
-
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RequestMapping("/auth")
@@ -25,13 +20,11 @@ import lombok.AllArgsConstructor;
 public class AuthenticationController {
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
-    private final TaskitUserDetailsService userDetailsService;
 
     @Autowired
     public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, TaskitUserDetailsService userDetailsService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
-        this.userDetailsService = userDetailsService;
     }
 
     @PostMapping("/signup")

@@ -1,15 +1,21 @@
 package com.htadg.taskit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.htadg.taskit.constant.TaskitConstants;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
 
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Data
 @Entity
@@ -28,13 +34,17 @@ public class User extends AuditableEntity implements UserDetails {
     private String username;
 
     private String email;
+
+    @ToString.Exclude
+    @JsonIgnore
     private String password;
     private boolean superAdmin = false;
     private boolean active = true;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private Collection<UserBoardRoleLink> userBoardRoleLinks;
+    private Collection<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
 
+    @JsonIgnore
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new HashSet<>();

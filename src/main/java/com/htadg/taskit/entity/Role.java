@@ -1,13 +1,15 @@
 package com.htadg.taskit.entity;
 
-import java.sql.Timestamp;
-import java.util.Collection;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Collection;
+import java.util.HashSet;
 
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Data
 @Entity
@@ -25,6 +27,6 @@ public class Role extends AuditableEntity {
     private boolean active = true;
 
     @OneToMany(mappedBy = "role")
-    private Collection<UserBoardRoleLink> userBoardRoleLinks;
+    private Collection<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
 
 }

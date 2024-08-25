@@ -1,13 +1,16 @@
 package com.htadg.taskit.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Getter
 @Setter
@@ -26,6 +29,6 @@ public class Board extends AuditableEntity {
     private boolean active = true;
 
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
-    private Collection<UserBoardRoleLink> userBoardRoleLinks;
+    private Collection<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
 
 }
