@@ -15,7 +15,7 @@ public class TaskController {
      *
      * @return a Response object containing the list of tasks in JSON format
      */
-    @PreAuthorize("@taskItAccessResolver.hasTaskItAccess(\"board\", \"READ\")")
+    @PreAuthorize("@taskItAccessResolver.hasTaskItAccess(\"ALL\", \"GUEST\")")
     @GetMapping(path="/getTasks", produces = "application/json")
     public ResponseEntity<String> getTasks() {
         String tasks = "{\"tasks\": [\"task1\", \"task2\", \"task3\"]}";

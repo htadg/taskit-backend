@@ -1,11 +1,15 @@
 package com.htadg.taskit.util;
 
+import com.htadg.taskit.constant.TaskitConstants;
 import com.htadg.taskit.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,9 +30,40 @@ public class TaskItAccessResolver {
             return false;
         }
         final String accessName = boardName + "_" + role;
-        boolean hasAccess = user.isSuperAdmin() || user.getAuthorities().stream().anyMatch(authority -> authority.getAuthority().equals(accessName));
+        final Set<String> accessNames = getAccessNamesWithHierarchy(boardName, role);
+        boolean hasAccess = user.isSuperAdmin() || user.getAuthorities().stream().anyMatch(authority -> accessNames.contains(authority.getAuthority()));
         log.debug("User {} Has Access {}: {}", user.getUsername(), accessName, hasAccess);
         return hasAccess;
+    }
+
+
+    /**
+     * Returns a set of access names with hierarchy based on the provided board name and role.
+     * Super Admin is not included in the hierarchy here since it has access to all boards.
+     *
+     * @param  boardName  the name of the board
+     * @param  role       the role to determine the access names for
+     * @return            a set of access names with hierarchy
+     */
+    private Set<String> getAccessNamesWithHierarchy(String boardName, String role) {
+        Set<String> accessNames = new HashSet<>();
+        switch (TaskitConstants.ROLE.valueOf(role)) {
+            case BOARD_ADMIN:
+                accessNames.add(boardName + "_" + TaskitConstants.ROLE.BOARD_ADMIN.getValue());
+                break;
+            case USER:
+                accessNames.add(boardName + "_" + TaskitConstants.ROLE.BOARD_ADMIN.getValue());
+                accessNames.add(boardName + "_" + TaskitConstants.ROLE.USER.getValue());
+                break;
+            case GUEST:
+                accessNames.add(boardName + "_" + TaskitConstants.ROLE.BOARD_ADMIN.getValue());
+                accessNames.add(boardName + "_" + TaskitConstants.ROLE.USER.getValue());
+                accessNames.add(boardName + "_" + TaskitConstants.ROLE.GUEST.getValue());
+                break;
+            default:
+                break;
+        }
+        return accessNames;
     }
 
 }
