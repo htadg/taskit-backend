@@ -1,56 +1,71 @@
 package com.htadg.taskit.service;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
+import com.htadg.taskit.constant.TaskitConstants;
 import com.htadg.taskit.dto.LoginUserDto;
 import com.htadg.taskit.dto.RegisterUserDto;
 import com.htadg.taskit.entity.User;
-import com.htadg.taskit.repository.RoleRepository;
-import com.htadg.taskit.repository.UserRepository;
+import com.htadg.taskit.exception.TaskItServiceException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.*;
+import org.springframework.stereotype.Service;
 
-import lombok.AllArgsConstructor;
 
+@Slf4j
 @Service
 @Setter
 @Getter
 public class AuthenticationService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+    public AuthenticationService(UserService userService, AuthenticationManager authenticationManager) {
+        this.userService = userService;
         this.authenticationManager = authenticationManager;
     }
 
     public User signup(RegisterUserDto input) {
         User user = new User();
-        user.setUsername(input.getUsername());
-        user.setPassword(passwordEncoder.encode(input.getPassword()));
-        user.setFirstName(input.getFirstName());
-        user.setLastName(input.getLastName());
-        user.setEmail(input.getEmail());
-        user.setSuperAdmin(input.isSuperAdmin());
-        user.setActive(input.isActive());
-        userRepository.save(user);
-
+        try {
+            user.setUsername(input.getUsername());
+            user.setPassword(input.getPassword());
+            user.setFirstName(input.getFirstName());
+            user.setLastName(input.getLastName());
+            user.setEmail(input.getEmail());
+            user.setSuperAdmin(input.isSuperAdmin());
+            user.setActive(input.isActive());
+            userService.save(user);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
         return user;
     }
 
-    public User authenticate(LoginUserDto input) {
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(input.getUsername(), input.getPassword())
-        );
+    public User authenticate(LoginUserDto input) throws TaskItServiceException {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(input.getUsername(), input.getPassword())
+            );
+        } catch (DisabledException e) {
+            throw new TaskItServiceException(TaskitConstants.DISABLED_ACCOUNT, e);
+        } catch (LockedException e) {
+            throw new TaskItServiceException(TaskitConstants.LOCKED_ACCOUNT, e);
+        } catch (BadCredentialsException e) {
+            throw new TaskItServiceException(TaskitConstants.BAD_CREDENTIALS, e);
+        }
 
-        return userRepository.findByUsername(input.getUsername());
+        User authenticatedUser = null;
+        try {
+            authenticatedUser = userService.findByUsername(input.getUsername());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return authenticatedUser;
     }
 }
