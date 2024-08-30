@@ -1,7 +1,7 @@
 package com.htadg.taskit.config;
 
 
-import com.htadg.taskit.constant.TaskitConstants;
+import com.htadg.taskit.constant.TaskItConstants;
 import com.htadg.taskit.entity.Role;
 import com.htadg.taskit.entity.User;
 import com.htadg.taskit.repository.RoleRepository;
@@ -38,11 +38,10 @@ public class SetupInitialData implements ApplicationListener<ContextRefreshedEve
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         createSuperAdmin();
-        createGuestUser();
-        createRoleIfNotExists(TaskitConstants.ROLE.SUPER_ADMIN.getValue());
-        createRoleIfNotExists(TaskitConstants.ROLE.BOARD_ADMIN.getValue());
-        createRoleIfNotExists(TaskitConstants.ROLE.USER.getValue());
-        createRoleIfNotExists(TaskitConstants.ROLE.GUEST.getValue());
+//        createGuestUser();
+        createRoleIfNotExists(TaskItConstants.ROLE.SUPER_ADMIN.getValue());
+        createRoleIfNotExists(TaskItConstants.ROLE.BOARD_ADMIN.getValue());
+        createRoleIfNotExists(TaskItConstants.ROLE.USER.getValue());
     }
 
     private void createSuperAdmin() {
@@ -64,23 +63,23 @@ public class SetupInitialData implements ApplicationListener<ContextRefreshedEve
         log.info("New Super Admin user created : {}", user);
     }
 
-    private void createGuestUser() {
-        User adminUser = userRepository.findByUsername("guest");
-        if (adminUser != null) {
-            log.info("Guest user already exists! {}", adminUser);
-            return;
-        }
-        User user = new User();
-        user.setUsername("guest");
-        user.setPassword(passwordEncoder.encode("guest"));
-        user.setFirstName("Guest");
-        user.setEmail("guest@taskit.com");
-        user.setSuperAdmin(false);
-        user.setActive(true);
-        userRepository.save(user);
-
-        log.info("New Guest user created : {}", user);
-    }
+//    private void createGuestUser() {
+//        User adminUser = userRepository.findByUsername("guest");
+//        if (adminUser != null) {
+//            log.info("Guest user already exists! {}", adminUser);
+//            return;
+//        }
+//        User user = new User();
+//        user.setUsername("guest");
+//        user.setPassword(passwordEncoder.encode("guest"));
+//        user.setFirstName("Guest");
+//        user.setEmail("guest@taskit.com");
+//        user.setSuperAdmin(false);
+//        user.setActive(true);
+//        userRepository.save(user);
+//
+//        log.info("New Guest user created : {}", user);
+//    }
 
     private void createRoleIfNotExists(String roleName) {
         Role role = roleRepository.findByName(roleName);

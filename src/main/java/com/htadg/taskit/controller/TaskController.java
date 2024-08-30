@@ -1,25 +1,31 @@
 package com.htadg.taskit.controller;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.htadg.taskit.entity.Task;
+import com.htadg.taskit.repository.BoardRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
+    private final BoardRepository boardRepository;
+
+    @Autowired
+    public TaskController(BoardRepository boardRepository) {
+        this.boardRepository = boardRepository;
+    }
+
     /**
      * Retrieves a list of tasks in JSON format.
      *
      * @return a Response object containing the list of tasks in JSON format
      */
-    @PreAuthorize("@taskItAccessResolver.hasTaskItAccess(\"ALL\", \"GUEST\")")
-    @GetMapping(path="/getTasks", produces = "application/json")
-    public ResponseEntity<String> getTasks() {
-        String tasks = "{\"tasks\": [\"task1\", \"task2\", \"task3\"]}";
-        return ResponseEntity.ok(tasks);
+    @GetMapping(path="/getTasksForBoard/{boardName}", produces = "application/json")
+    public @ResponseBody Collection<Task> getTasks(@PathVariable String boardName) {
+        return boardRepository.findByName(boardName).getTaskList();
     }
 
 }

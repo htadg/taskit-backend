@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -27,6 +27,6 @@ public class Role extends AuditableEntity {
     private boolean active = true;
 
     @OneToMany(mappedBy = "role")
-    private Collection<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
+    private Set<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
 
 }

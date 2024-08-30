@@ -1,7 +1,5 @@
 package com.htadg.taskit.config;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 
 @Configuration
@@ -42,15 +42,30 @@ public class SecurityConfiguration {
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
-
+    
+    /**
+      * Configures the security filter chain for the application.
+      * <p>
+      * This method configures the following security settings:
+      * - Disables CSRF protection
+      * - Requires authentication for requests to paths containing "/authenticated/"
+      * - Allows access to any request
+      * - Disables frame options protection
+      * - Sets the session creation policy to STATELESS
+      * - Adds the JwtAuthenticationFilter before the UsernamePasswordAuthenticationFilter in the filter chain
+      *
+      * @param  http  the HttpSecurity object to configure
+      * @return       the SecurityFilterChain object representing the configured filter chain
+      * @throws Exception if an error occurs during the configuration process
+      */
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((authorizeHttpRequest) -> {
                 authorizeHttpRequest
-                    .requestMatchers("/auth/**", "/h2-console/**").permitAll()
-                    .anyRequest().authenticated();
+                    .requestMatchers("**/authenticated/**").authenticated()
+                    .anyRequest().permitAll();
             })
             .headers((headersCustomizer) -> {
                 headersCustomizer

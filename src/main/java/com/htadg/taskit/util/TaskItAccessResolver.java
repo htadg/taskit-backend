@@ -1,6 +1,6 @@
 package com.htadg.taskit.util;
 
-import com.htadg.taskit.constant.TaskitConstants;
+import com.htadg.taskit.constant.TaskItConstants;
 import com.htadg.taskit.entity.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,21 +47,13 @@ public class TaskItAccessResolver {
      */
     private Set<String> getAccessNamesWithHierarchy(String boardName, String role) {
         Set<String> accessNames = new HashSet<>();
-        switch (TaskitConstants.ROLE.valueOf(role)) {
-            case BOARD_ADMIN:
-                accessNames.add(boardName + "_" + TaskitConstants.ROLE.BOARD_ADMIN.getValue());
-                break;
-            case USER:
-                accessNames.add(boardName + "_" + TaskitConstants.ROLE.BOARD_ADMIN.getValue());
-                accessNames.add(boardName + "_" + TaskitConstants.ROLE.USER.getValue());
-                break;
-            case GUEST:
-                accessNames.add(boardName + "_" + TaskitConstants.ROLE.BOARD_ADMIN.getValue());
-                accessNames.add(boardName + "_" + TaskitConstants.ROLE.USER.getValue());
-                accessNames.add(boardName + "_" + TaskitConstants.ROLE.GUEST.getValue());
-                break;
-            default:
-                break;
+        switch (TaskItConstants.ROLE.valueOf(role)) {
+            case BOARD_ADMIN -> accessNames.add(boardName + "_" + TaskItConstants.ROLE.BOARD_ADMIN.getValue());
+            case USER -> {
+                accessNames.add(boardName + "_" + TaskItConstants.ROLE.BOARD_ADMIN.getValue());
+                accessNames.add(boardName + "_" + TaskItConstants.ROLE.USER.getValue());
+            }
+            default -> log.error("Invalid Access Specifiers: {}, {}", boardName, role);
         }
         return accessNames;
     }

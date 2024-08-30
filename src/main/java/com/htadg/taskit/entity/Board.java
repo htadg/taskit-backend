@@ -6,8 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -29,6 +29,9 @@ public class Board extends AuditableEntity {
     private boolean active = true;
 
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
-    private Collection<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
+    private Set<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
+
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+    private Set<Task> taskList = new HashSet<>();
 
 }

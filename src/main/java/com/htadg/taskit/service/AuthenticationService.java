@@ -1,6 +1,6 @@
 package com.htadg.taskit.service;
 
-import com.htadg.taskit.constant.TaskitConstants;
+import com.htadg.taskit.constant.TaskItConstants;
 import com.htadg.taskit.dto.LoginUserDto;
 import com.htadg.taskit.dto.RegisterUserDto;
 import com.htadg.taskit.entity.User;
@@ -52,11 +52,11 @@ public class AuthenticationService {
                     new UsernamePasswordAuthenticationToken(input.getUsername(), input.getPassword())
             );
         } catch (DisabledException e) {
-            throw new TaskItServiceException(TaskitConstants.DISABLED_ACCOUNT, e);
+            throw new TaskItServiceException(TaskItConstants.DISABLED_ACCOUNT, e);
         } catch (LockedException e) {
-            throw new TaskItServiceException(TaskitConstants.LOCKED_ACCOUNT, e);
+            throw new TaskItServiceException(TaskItConstants.LOCKED_ACCOUNT, e);
         } catch (BadCredentialsException e) {
-            throw new TaskItServiceException(TaskitConstants.BAD_CREDENTIALS, e);
+            throw new TaskItServiceException(TaskItConstants.BAD_CREDENTIALS, e);
         }
 
         User authenticatedUser = null;

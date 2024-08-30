@@ -2,7 +2,7 @@ package com.htadg.taskit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.htadg.taskit.constant.TaskitConstants;
+import com.htadg.taskit.constant.TaskItConstants;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -42,7 +43,7 @@ public class User extends AuditableEntity implements UserDetails {
     private boolean active = true;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private Collection<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
+    private Set<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
 
     @JsonIgnore
     @Override
@@ -53,9 +54,9 @@ public class User extends AuditableEntity implements UserDetails {
         }
         if (authorities.isEmpty()) {
             if (this.isSuperAdmin())
-                authorities.add(new SimpleGrantedAuthority(TaskitConstants.ROLE.SUPER_ADMIN.getValue()));
+                authorities.add(new SimpleGrantedAuthority(TaskItConstants.ROLE.SUPER_ADMIN.getValue()));
             else
-                authorities.add(new SimpleGrantedAuthority(TaskitConstants.ROLE.GUEST.getValue()));
+                authorities.add(new SimpleGrantedAuthority(TaskItConstants.ROLE.GUEST.getValue()));
         }
         return authorities;
     }
