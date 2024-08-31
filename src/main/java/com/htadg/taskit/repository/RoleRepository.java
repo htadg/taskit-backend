@@ -1,14 +1,13 @@
 package com.htadg.taskit.repository;
 
-import java.util.Collection;
-
+import com.htadg.taskit.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.htadg.taskit.entity.Role;
+import java.util.Set;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Integer> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
     public Role findByName(String name);
-    public Collection<Role> findByIdIn(Collection<String> name);
+    public Set<Role> findByIdIn(Set<String> name);
 }

@@ -1,5 +1,6 @@
 package com.htadg.taskit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.htadg.taskit.constant.TaskItConstants;
 import jakarta.persistence.*;
@@ -19,28 +20,33 @@ import java.sql.Date;
 public class Task extends AuditableEntity {
 
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @EqualsAndHashCode.Include
     private String name;
 
     private String description;
-    private TaskItConstants.TASK_STATUS status;
+    private String status;
 
     private String owner;
     private String assignee = "Unassigned";
+
+    @Column(name = "due_date")
     @Temporal(TemporalType.DATE)
     private Date dueDate;
 
-    private boolean active = true;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "board_id")
     private Board board;
 
     public String getTaskNumber() {
         return "TASKIT-" + getId();
+    }
+
+    public TaskItConstants.TASK_STATUS getTaskStatus() {
+        return TaskItConstants.TASK_STATUS.valueOf(status);
     }
 
     public String toString() {

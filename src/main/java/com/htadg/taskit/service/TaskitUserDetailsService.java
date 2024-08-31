@@ -28,7 +28,7 @@ public class TaskitUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            return User.getGuestUser();
+            throw new UsernameNotFoundException("User not found with username : " + username);
         }
         return user;
     }

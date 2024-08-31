@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = false)
 @Data
 @Entity
 @Table(name = "USER_BOARD_ROLE")
@@ -16,8 +16,8 @@ public class UserBoardRoleLink extends AuditableEntity {
 
     @EqualsAndHashCode.Exclude
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

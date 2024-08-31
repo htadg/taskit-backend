@@ -1,5 +1,6 @@
 package com.htadg.taskit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -17,15 +18,15 @@ import java.util.Set;
 public class Role extends AuditableEntity {
  
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @EqualsAndHashCode.Include
     private String name;
 
     private String description;
-    private boolean active = true;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "role")
     private Set<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
 

@@ -1,6 +1,4 @@
-package com.htadg.taskit.dto;
-
-import java.util.Collection;
+package com.htadg.taskit.dto.request;
 
 import lombok.Data;
 
@@ -11,6 +9,5 @@ public class RegisterUserDto {
     private String email;
     private String username;
     private String password;
-    private boolean superAdmin = false;
     private boolean active = true;
 }

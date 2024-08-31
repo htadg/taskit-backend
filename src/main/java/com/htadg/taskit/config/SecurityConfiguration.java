@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +20,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 
 @Configuration
@@ -64,12 +65,8 @@ public class SecurityConfiguration {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((authorizeHttpRequest) -> {
                 authorizeHttpRequest
-                    .requestMatchers("**/authenticated/**").authenticated()
+                    .requestMatchers(antMatcher("/**/authenticated/**")).authenticated()
                     .anyRequest().permitAll();
-            })
-            .headers((headersCustomizer) -> {
-                headersCustomizer
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
             })
             .sessionManagement((sessionRequest) -> {
                 sessionRequest

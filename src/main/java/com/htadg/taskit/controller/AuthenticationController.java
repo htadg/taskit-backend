@@ -1,8 +1,8 @@
 package com.htadg.taskit.controller;
 
-import com.htadg.taskit.dto.LoginResponseDto;
-import com.htadg.taskit.dto.LoginUserDto;
-import com.htadg.taskit.dto.RegisterUserDto;
+import com.htadg.taskit.dto.request.LoginUserDto;
+import com.htadg.taskit.dto.request.RegisterUserDto;
+import com.htadg.taskit.dto.response.LoginResponseDto;
 import com.htadg.taskit.entity.User;
 import com.htadg.taskit.exception.TaskItServiceException;
 import com.htadg.taskit.service.AuthenticationService;

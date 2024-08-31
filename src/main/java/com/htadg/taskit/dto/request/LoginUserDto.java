@@ -1,4 +1,4 @@
-package com.htadg.taskit.dto;
+package com.htadg.taskit.dto.request;
 
 import lombok.Data;
 

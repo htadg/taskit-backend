@@ -3,6 +3,7 @@ package com.htadg.taskit.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.htadg.taskit.constant.TaskItConstants;
+import com.htadg.taskit.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,10 +25,13 @@ import java.util.Set;
 public class User extends AuditableEntity implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
 
     @EqualsAndHashCode.Include
@@ -39,9 +43,11 @@ public class User extends AuditableEntity implements UserDetails {
     @ToString.Exclude
     @JsonIgnore
     private String password;
-    private boolean superAdmin = false;
-    private boolean active = true;
 
+    @Column(name = "is_super_admin")
+    private boolean superAdmin = false;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
 
@@ -81,8 +87,13 @@ public class User extends AuditableEntity implements UserDetails {
         return isActive();
     }
 
-    public static User getGuestUser() {
-        return new User();
+    public UserDto getDto() {
+        UserDto userDto = new UserDto();
+        userDto.setUsername(this.getUsername());
+        userDto.setFirstName(this.getFirstName());
+        userDto.setLastName(this.getLastName());
+        userDto.setEmail(this.getEmail());
+        return userDto;
     }
 
 }
