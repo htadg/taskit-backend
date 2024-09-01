@@ -1,8 +1,11 @@
 package com.htadg.taskit.controller;
 
+import com.htadg.taskit.dto.TaskItResponseBuilder;
+import com.htadg.taskit.entity.Board;
 import com.htadg.taskit.entity.Task;
 import com.htadg.taskit.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +31,20 @@ public class TaskController {
      * @return a Response object containing the list of tasks in JSON format
      */
     @GetMapping(path="/getTasksForBoard/{boardName}", produces = "application/json")
-    public ResponseEntity<Collection<Task>>  getTasks(@PathVariable String boardName) {
-        return ResponseEntity.ok(boardRepository.findByName(boardName).getTaskList());
+    public ResponseEntity<Object>  getTasks(@PathVariable String boardName) {
+        TaskItResponseBuilder response;
+        try {
+            Board board = boardRepository.findByName(boardName);
+            if (board != null) {
+                Collection<Task> tasks = board.getTaskList();
+                response = TaskItResponseBuilder.status(HttpStatus.OK).message("Tasks successfully retrieved.").data(tasks);
+            } else {
+                response = TaskItResponseBuilder.status(HttpStatus.NOT_FOUND).message("Board not found.");
+            }
+        } catch (Exception e) {
+            response = TaskItResponseBuilder.status(HttpStatus.INTERNAL_SERVER_ERROR).message(e.getMessage());
+        }
+        return response.build();
     }
 
 }

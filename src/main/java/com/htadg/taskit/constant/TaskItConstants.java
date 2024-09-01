@@ -4,6 +4,8 @@ import lombok.Getter;
 
 public class TaskItConstants {
 
+    public static final String SUCCESS = "Success";
+    public static final String FAILURE = "Failure";
     public static final String BAD_CREDENTIALS = "Invalid Credentials";
     public static final String LOCKED_ACCOUNT = "User Account is Locked";
     public static final String DISABLED_ACCOUNT = "User Account is Disabled";

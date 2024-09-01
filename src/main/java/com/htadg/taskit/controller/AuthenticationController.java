@@ -1,5 +1,6 @@
 package com.htadg.taskit.controller;
 
+import com.htadg.taskit.dto.TaskItResponseBuilder;
 import com.htadg.taskit.dto.request.LoginUserDto;
 import com.htadg.taskit.dto.request.RegisterUserDto;
 import com.htadg.taskit.dto.response.LoginResponseDto;
@@ -8,7 +9,6 @@ import com.htadg.taskit.exception.TaskItServiceException;
 import com.htadg.taskit.service.AuthenticationService;
 import com.htadg.taskit.service.JwtService;
 import com.htadg.taskit.service.TaskitUserDetailsService;
-import com.htadg.taskit.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,23 +32,23 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> register(@RequestBody RegisterUserDto user) {
-        ResponseEntity<String> response;
+    public ResponseEntity<Object> register(@RequestBody RegisterUserDto user) {
+        TaskItResponseBuilder response;
         try {
             User registeredUser = authenticationService.signup(user);
-            response = ResponseEntity.ok(JsonUtil.toJson(registeredUser));
+            response = TaskItResponseBuilder.status(HttpStatus.OK).message("User successfully created.").data(registeredUser);
         } catch (TaskItServiceException e) {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            response = TaskItResponseBuilder.status(HttpStatus.BAD_REQUEST).message(e.getMessage());
         } catch (Exception e) {
-            response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            response = TaskItResponseBuilder.status(HttpStatus.INTERNAL_SERVER_ERROR).message(e.getMessage());
         }
 
-        return response;
+        return response.build();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        ResponseEntity<String> response;
+    @PostMapping("/getAuthToken")
+    public ResponseEntity<Object> authenticate(@RequestBody LoginUserDto loginUserDto) {
+        TaskItResponseBuilder response;
         try {
             User authenticatedUser = authenticationService.authenticate(loginUserDto);
             String jwtToken = jwtService.generateToken(authenticatedUser);
@@ -57,13 +57,13 @@ public class AuthenticationController {
             loginResponse.setToken(jwtToken);
             loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
-            response = ResponseEntity.ok(JsonUtil.toJson(loginResponse));
+            response = TaskItResponseBuilder.status(HttpStatus.OK).data(loginResponse);
         } catch (TaskItServiceException e) {
-            response = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            response = TaskItResponseBuilder.status(HttpStatus.BAD_REQUEST).data(e.getMessage());
         } catch (Exception e) {
-            response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            response = TaskItResponseBuilder.status(HttpStatus.INTERNAL_SERVER_ERROR).data(e.getMessage());
         }
 
-        return response;
+        return response.build();
     }
 }
