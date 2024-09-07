@@ -1,6 +1,9 @@
 package com.htadg.taskit.constant;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
+
+import java.util.Arrays;
 
 public class TaskItConstants {
 
@@ -35,6 +38,14 @@ public class TaskItConstants {
 
         private TASK_STATUS(String value) {
             this.value = value;
+        }
+
+        @JsonValue
+        public static TASK_STATUS fromValue(String value) {
+            return Arrays.stream(TASK_STATUS.values())
+                    .filter(status -> status.getValue().equals(value))
+                    .findFirst()
+                    .orElseThrow();
         }
     }
 

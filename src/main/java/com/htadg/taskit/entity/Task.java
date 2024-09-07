@@ -41,15 +41,16 @@ public class Task extends AuditableEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    public String getTaskNumber() {
+    public String getTaskId() {
         return "TASKIT-" + getId();
     }
 
+    @JsonIgnore
     public TaskItConstants.TASK_STATUS getTaskStatus() {
-        return TaskItConstants.TASK_STATUS.valueOf(status);
+        return TaskItConstants.TASK_STATUS.fromValue(status);
     }
 
     public String toString() {
-        return "Task(taskNumber=" + this.getTaskNumber() + ", name=" + this.getName() + ", active=" + this.isActive() + ")";
+        return "Task(taskNumber=" + this.getTaskId() + ", name=" + this.getName() + ", active=" + this.isActive() + ")";
     }
 }
