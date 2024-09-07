@@ -1,6 +1,5 @@
 package com.htadg.taskit.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.htadg.taskit.constant.TaskItConstants;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskItResponseBuilder {
 
     private final HttpStatusCode statusCode;
@@ -35,8 +33,8 @@ public class TaskItResponseBuilder {
     public ResponseEntity<Object> build() {
         Map<String, Object> body = new HashMap<>();
         body.put("status", this.status);
-        body.put("message", this.message);
         body.put("data", this.data);
+        if (this.message != null) body.put("message", this.message);
 
         return new ResponseEntity<>(body, this.statusCode);
     }

@@ -1,5 +1,6 @@
 package com.htadg.taskit.controller;
 
+import com.htadg.taskit.constant.TaskItConstants;
 import com.htadg.taskit.dto.TaskItResponseBuilder;
 import com.htadg.taskit.entity.Board;
 import com.htadg.taskit.entity.Task;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 
 @RestController
@@ -41,6 +44,20 @@ public class TaskController {
             } else {
                 response = TaskItResponseBuilder.status(HttpStatus.NOT_FOUND).message("Board not found.");
             }
+        } catch (Exception e) {
+            response = TaskItResponseBuilder.status(HttpStatus.INTERNAL_SERVER_ERROR).message(e.getMessage());
+        }
+        return response.build();
+    }
+
+    @GetMapping(path="/getAvailableStatus", produces = "application/json")
+    public ResponseEntity<Object> getAvailableStatus() {
+        TaskItResponseBuilder response;
+        try  {
+            List<String> statusList = Arrays.stream(TaskItConstants.TASK_STATUS.values())
+                    .map(TaskItConstants.TASK_STATUS::getValue)
+                    .toList();
+            response = TaskItResponseBuilder.status(HttpStatus.OK).data(statusList);
         } catch (Exception e) {
             response = TaskItResponseBuilder.status(HttpStatus.INTERNAL_SERVER_ERROR).message(e.getMessage());
         }
