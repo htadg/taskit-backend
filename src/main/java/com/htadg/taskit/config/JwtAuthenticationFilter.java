@@ -1,8 +1,14 @@
 package com.htadg.taskit.config;
 
-import java.io.IOException;
-
+import com.htadg.taskit.service.JwtService;
+import com.htadg.taskit.service.TaskitUserDetailsService;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,19 +18,17 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import com.htadg.taskit.service.JwtService;
-import com.htadg.taskit.service.TaskitUserDetailsService;
-
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 
 @Slf4j
 @Configuration
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    @Value("${security.authenticated-path-regex}")
+    private String authenticatedRegex;
+    private Pattern authenticationPattern;
 
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtService jwtService;
@@ -43,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (isAuthenticatedPath(request) || authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -69,6 +73,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isAuthenticatedPath(HttpServletRequest request) {
+        if (this.authenticationPattern == null) {
+            this.authenticationPattern = Pattern.compile(authenticatedRegex);
+        }
+        return this.authenticationPattern.matcher(request.getServletPath()).matches();
     }
 
 }

@@ -39,6 +39,9 @@ public class SecurityConfiguration {
     @Value("${taskit.allowed_headers}")
     private List<String> allowedHeaders;
 
+    @Value("${security.authenticated-path-matcher}")
+    private String authenticatedMatchers;
+
     @Autowired
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -65,7 +68,7 @@ public class SecurityConfiguration {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests((authorizeHttpRequest) -> {
                 authorizeHttpRequest
-                    .requestMatchers(antMatcher("/**/authenticated/**")).authenticated()
+                    .requestMatchers(antMatcher(authenticatedMatchers)).authenticated()
                     .anyRequest().permitAll();
             })
             .sessionManagement((sessionRequest) -> {
