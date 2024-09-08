@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class TaskItConstants {
 
@@ -12,6 +13,7 @@ public class TaskItConstants {
     public static final String BAD_CREDENTIALS = "Invalid Credentials";
     public static final String LOCKED_ACCOUNT = "User Account is Locked";
     public static final String DISABLED_ACCOUNT = "User Account is Disabled";
+    public static final String NOT_FOUND = "%s: [%s] not found.";
 
     @Getter
     public static enum ROLE {
@@ -46,6 +48,12 @@ public class TaskItConstants {
                     .filter(status -> status.getValue().equals(value))
                     .findFirst()
                     .orElseThrow();
+        }
+        
+        public static List<String> getAllStatusValues() {
+            return Arrays.stream(TASK_STATUS.values())
+                    .map(TASK_STATUS::getValue)
+                    .toList();
         }
     }
 

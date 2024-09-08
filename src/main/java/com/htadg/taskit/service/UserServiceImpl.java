@@ -3,10 +3,11 @@ package com.htadg.taskit.service;
 import com.htadg.taskit.entity.User;
 import com.htadg.taskit.exception.TaskItServiceException;
 import com.htadg.taskit.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,17 +16,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private BoardService boardService;
 
     @Override
     public User findByUsername(String username) {
@@ -52,3 +50,9 @@ public class UserServiceImpl implements UserService {
     }
 
 }
+
+
+
+
+
+

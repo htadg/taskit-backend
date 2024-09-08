@@ -5,6 +5,5 @@ import com.htadg.taskit.exception.TaskItServiceException;
 
 public interface UserService {
     User findByUsername(String username);
-
     void save(User user) throws TaskItServiceException;
 }
