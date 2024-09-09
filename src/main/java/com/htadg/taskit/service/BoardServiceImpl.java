@@ -33,4 +33,9 @@ public class BoardServiceImpl implements BoardService {
     public List<User> getUsersForBoard(Board board) {
         return board.getUserBoardRoleLinks().stream().map(UserBoardRoleLink::getUser).toList();
     }
+
+    @Override
+    public boolean existsByName(String name) {
+        return boardRepository.existsByName(name);
+    }
 }

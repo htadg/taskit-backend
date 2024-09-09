@@ -33,7 +33,7 @@ public class TaskItResponseBuilder {
     public ResponseEntity<Object> build() {
         Map<String, Object> body = new HashMap<>();
         body.put("status", this.status);
-        body.put("data", this.data);
+        if (this.data != null) body.put("data", this.data);
         if (this.message != null) body.put("message", this.message);
 
         return new ResponseEntity<>(body, this.statusCode);

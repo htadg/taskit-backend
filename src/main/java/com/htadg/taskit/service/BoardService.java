@@ -8,4 +8,5 @@ import java.util.List;
 public interface BoardService {
     Board getBoardByName(String boardName);
     List<User> getUsersForBoard(Board board);
+    boolean existsByName(String name);
 }

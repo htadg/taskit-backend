@@ -2,6 +2,7 @@ package com.htadg.taskit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.htadg.taskit.dto.BoardDto;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,5 +35,9 @@ public class Board extends AuditableEntity {
 
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
     private Set<Task> taskList = new HashSet<>();
+
+    public BoardDto getDto() {
+        return new BoardDto(id, name, description);
+    }
 
 }

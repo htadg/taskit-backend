@@ -1,6 +1,8 @@
 package com.htadg.taskit.service;
 
+import com.htadg.taskit.entity.Board;
 import com.htadg.taskit.entity.User;
+import com.htadg.taskit.entity.UserBoardRoleLink;
 import com.htadg.taskit.exception.TaskItServiceException;
 import com.htadg.taskit.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -11,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Slf4j
@@ -47,6 +51,11 @@ public class UserServiceImpl implements UserService {
             log.error(e.getMessage(), e);
             throw new TaskItServiceException(e);
         }
+    }
+
+    @Override
+    public List<Board> getBoardsForUser(User user) {
+        return user.getUserBoardRoleLinks().stream().map(UserBoardRoleLink::getBoard).distinct().toList();
     }
 
 }
