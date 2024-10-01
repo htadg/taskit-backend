@@ -30,10 +30,10 @@ public class Board extends AuditableEntity {
     private String description;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Task> taskList = new HashSet<>();
 
     public BoardDto getDto() {

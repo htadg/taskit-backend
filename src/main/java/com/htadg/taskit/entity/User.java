@@ -48,7 +48,7 @@ public class User extends AuditableEntity implements UserDetails {
     private boolean superAdmin = false;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<UserBoardRoleLink> userBoardRoleLinks = new HashSet<>();
 
     @JsonIgnore

@@ -37,11 +37,10 @@ public class SetupInitialData implements ApplicationListener<ContextRefreshedEve
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        createSuperAdmin();
-//        createGuestUser();
-        createRoleIfNotExists(TaskItConstants.ROLE.SUPER_ADMIN.getValue());
-        createRoleIfNotExists(TaskItConstants.ROLE.BOARD_ADMIN.getValue());
-        createRoleIfNotExists(TaskItConstants.ROLE.USER.getValue());
+//        createSuperAdmin();
+//        createRoleIfNotExists(TaskItConstants.ROLE.SUPER_ADMIN.getValue());
+//        createRoleIfNotExists(TaskItConstants.ROLE.BOARD_ADMIN.getValue());
+//        createRoleIfNotExists(TaskItConstants.ROLE.USER.getValue());
     }
 
     private void createSuperAdmin() {
@@ -62,24 +61,6 @@ public class SetupInitialData implements ApplicationListener<ContextRefreshedEve
 
         log.info("New Super Admin user created : {}", user);
     }
-
-//    private void createGuestUser() {
-//        User adminUser = userRepository.findByUsername("guest");
-//        if (adminUser != null) {
-//            log.info("Guest user already exists! {}", adminUser);
-//            return;
-//        }
-//        User user = new User();
-//        user.setUsername("guest");
-//        user.setPassword(passwordEncoder.encode("guest"));
-//        user.setFirstName("Guest");
-//        user.setEmail("guest@taskit.com");
-//        user.setSuperAdmin(false);
-//        user.setActive(true);
-//        userRepository.save(user);
-//
-//        log.info("New Guest user created : {}", user);
-//    }
 
     private void createRoleIfNotExists(String roleName) {
         Role role = roleRepository.findByName(roleName);
