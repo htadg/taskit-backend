@@ -6,6 +6,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,23 +28,22 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Configuration
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Value("${security.authenticated-path-regex}")
     private String authenticatedRegex;
     private Pattern authenticationPattern;
 
-    private final HandlerExceptionResolver handlerExceptionResolver;
-    private final JwtService jwtService;
-    private final TaskitUserDetailsService userDetailsService;
-
     @Autowired
-    public JwtAuthenticationFilter(JwtService jwtService, TaskitUserDetailsService userDetailsService,
-            HandlerExceptionResolver handlerExceptionResolver) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-        this.handlerExceptionResolver = handlerExceptionResolver;
-    }
+    private HandlerExceptionResolver handlerExceptionResolver;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private TaskitUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

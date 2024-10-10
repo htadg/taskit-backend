@@ -8,7 +8,10 @@ import com.htadg.taskit.entity.User;
 import com.htadg.taskit.exception.TaskItServiceException;
 import com.htadg.taskit.service.AuthenticationService;
 import com.htadg.taskit.service.JwtService;
-import com.htadg.taskit.service.TaskitUserDetailsService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,15 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor(onConstructor_ = @__({ @Autowired }))
 public class AuthenticationController {
-    private final JwtService jwtService;
-    private final AuthenticationService authenticationService;
 
-    @Autowired
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, TaskitUserDetailsService userDetailsService) {
-        this.jwtService = jwtService;
-        this.authenticationService = authenticationService;
-    }
+    private JwtService jwtService;
+    private AuthenticationService authenticationService;
 
     @PostMapping("/signup")
     public ResponseEntity<Object> register(@RequestBody RegisterUserDto user) {
