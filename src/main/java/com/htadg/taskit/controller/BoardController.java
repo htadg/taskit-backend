@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,7 +37,7 @@ public class BoardController {
     private BoardService boardService;
 
     @PreAuthorize("@taskItAccessResolver.hasTaskItAccess('ALL', 'SUPER_ADMIN')")
-    @RequestMapping("/authenticated/checkIfBoardExists")
+    @GetMapping(value = "/authenticated/checkIfBoardExists", produces = "application/json")
     public ResponseEntity<Object> checkIfBoardExists(@RequestParam(name = "boardName") String boardName) {
         TaskItResponseBuilder response;
         log.info("Checking if Board [{}] exists", boardName);
@@ -54,8 +57,8 @@ public class BoardController {
     }
 
     @PreAuthorize("@taskItAccessResolver.hasTaskItAccess(#boardName, 'USER')")
-    @RequestMapping("/authenticated/getUsersForBoard/{boardName}")
-    public ResponseEntity<Object> getUsersForBoard(@PathVariable String boardName) {
+    @GetMapping(value = "/authenticated/getUsersForBoard", produces = "application/json")
+    public ResponseEntity<Object> getUsersForBoard(@RequestParam(name = "boardName") String boardName) {
         TaskItResponseBuilder response;
         log.info("Fetching users for board [{}]", boardName);
         try {
@@ -80,8 +83,8 @@ public class BoardController {
      *
      * @return a Response object containing the list of tasks in JSON format
      */
-    @GetMapping(path="/getTasksForBoard/{boardName}", produces = "application/json")
-    public ResponseEntity<Object>  getTasks(@PathVariable String boardName) {
+    @GetMapping(path="/getTasksForBoard", produces = "application/json")
+    public ResponseEntity<Object>  getTasks(@RequestParam(name = "boardName") String boardName) {
         TaskItResponseBuilder response;
         log.info("Fetching tasks for board [{}]", boardName);
         try {
